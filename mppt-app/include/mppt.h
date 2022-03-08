@@ -7,13 +7,13 @@ class Mppt {
     
     private:
         float current, voltage;
+        float v0, v1, i0, i1, t0, t1; 
         float dv, di; 
-        int cycle_time_ms;
         Timer timer;  
 
     public:
 
-        Mppt(float current, float voltage, int cycle_ms);
+        Mppt(float current, float voltage);
 
         void set_voltage(float voltage);
 
@@ -22,15 +22,5 @@ class Mppt {
         int calc_mppt();
 
         void run_mppt();
-
-    private:
-
-        void calc_dv(){
-            
-        }
-
-        void calc_di(){
-
-        }
 
 };
