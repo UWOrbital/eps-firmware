@@ -8,6 +8,7 @@ void setup() {
 // Variables need for operation
 const int avgSamples = 10; // Number of samples to average the reading over
 int sensorValue = 0;
+// gain = I_in/(V_measured - Vref) - Use power supply to get known I_in, then see what the V_measured is from the sensor 
 float gain = -2.56; // For 100mA/250mV
 // Output voltage with no current: ~ 2500mV, determine by reading measurement values when no current is passing
 float Vref = 2469.28; 
