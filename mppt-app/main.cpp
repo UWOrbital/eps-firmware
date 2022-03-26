@@ -7,23 +7,27 @@ using namespace std::chrono;
 
 #define BLINKING_RATE     5000ms
 #define SAMPLE_RATE       50ms
+#define PWM_RATE          500ms
 #define V_REF             3.3
 #define V_OFFSET          2.7641
 #define GAIN              1.0
 
 // Initialise the digital pin LED1 as an output
 #ifdef LED1
-    DigitalOut led(LED1);
+    DigitalOut dout(LED1);
 #else
-    bool led;
+    bool dout;
 #endif
 
 // Initialize a pins to perform analog input and digital output functions
-AnalogIn   ain(PA_0, V_REF);
-DigitalOut dout(LED1);
+AnalogIn ain(PA_0, V_REF);
 
 // Using Low Power timer because it does not block deep sleep mode
 LowPowerTimer timer; 
+
+// LED1 is PWM Capable 
+PwmOut pwm_led(LED1);
+PwmOut pwm_out(PA_1); // PWM Capable pin
 
 // main() runs in its own thread in the OS
 int main()
@@ -40,11 +44,12 @@ int main()
     // Start timer
     timer.start(); 
 
+    // PWM Control
+    pwm_led.period(4.0f);      // 4 second period
+
     while (true) {
 
         printf("\n Next ==> \n");
-        
-        led = !led; // Toggle LED
 
         // Sleep for defined time
         ThisThread::sleep_for(BLINKING_RATE);
@@ -58,6 +63,13 @@ int main()
         // Read timer values 
         time_delta = timer.elapsed_time();
         printf("Elapsed time: %llu milliseconds\n", duration_cast<std::chrono::milliseconds>(time_delta).count());
+
+        // Vary the duty cycle from 0 to 95%
+        for(float duty = 0.0; duty < 1.0; duty += 0.05){
+            pwm_led.write(duty);
+            printf("Writing PWM: %g \n", duty);
+            ThisThread::sleep_for(PWM_RATE);
+        }
 
     }
 }
