@@ -1,6 +1,9 @@
 #include "mbed.h"
+#include <chrono>
 #include <cstdint>
 #include <cstdio>
+
+using namespace std::chrono;
 
 #define BLINKING_RATE     5000ms
 #define SAMPLE_RATE       50ms
@@ -19,6 +22,9 @@
 AnalogIn   ain(PA_0, V_REF);
 DigitalOut dout(LED1);
 
+// Using Low Power timer because it does not block deep sleep mode
+LowPowerTimer timer; 
+
 // main() runs in its own thread in the OS
 int main()
 {
@@ -26,6 +32,13 @@ int main()
     printf("Running Mbed OS %d\n", MBED_MAJOR_VERSION);
     printf("ADC Vref %f\n", ain.get_reference_voltage());
     float raw = 0; 
+
+    // Store timer reads
+    // Using microseconds std::chrono types 
+    microseconds time_delta; 
+
+    // Start timer
+    timer.start(); 
 
     while (true) {
 
@@ -41,6 +54,11 @@ int main()
         printf("raw: %g \n", raw);
         printf("voltage: %g \n", (raw*V_REF));
         printf("current: %g \n", (raw*V_REF) - V_OFFSET);
+
+        // Read timer values 
+        time_delta = timer.elapsed_time();
+        printf("Elapsed time: %llu milliseconds\n", duration_cast<std::chrono::milliseconds>(time_delta).count());
+
     }
 }
 
