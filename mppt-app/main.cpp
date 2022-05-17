@@ -11,6 +11,7 @@ using namespace std::chrono;
 #define V_REF             3.3
 #define V_OFFSET          2.7641
 #define GAIN              1.0
+#define V_NOLOAD          4.0
 
 // Initialise the digital pin LED1 as an output
 #ifdef LED1
@@ -29,12 +30,21 @@ LowPowerTimer timer;
 PwmOut pwm_led(LED1);
 PwmOut pwm_out(PA_1); // PWM Capable pin
 
+// Reference Voltage
+float ref_v = V_REF;
+
 // main() runs in its own thread in the OS
 int main()
 {
 
     printf("Running Mbed OS %d\n", MBED_MAJOR_VERSION);
-    printf("ADC Vref %f\n", ain.get_reference_voltage());
+    printf("Initial ADC Vref %f\n", ain.get_reference_voltage());
+ 
+    // Set reference voltage
+    ain.set_reference_voltage(5.0);
+    ref_v = ain.get_reference_voltage();
+
+    printf("ADC Vref %f\n", ref_v);
     float raw = 0; 
 
     // Store timer reads
@@ -57,8 +67,8 @@ int main()
         // print the percentage and 16 bit normalized values
         raw = ain.read();
         printf("raw: %g \n", raw);
-        printf("voltage: %g \n", (raw*V_REF));
-        printf("current: %g \n", (raw*V_REF) - V_OFFSET);
+        printf("voltage: %g \n", (raw*ref_v));
+        printf("current: %g \n", (raw*ref_v) - V_NOLOAD);
 
         // Read timer values 
         time_delta = timer.elapsed_time();
@@ -67,7 +77,7 @@ int main()
         // Vary the duty cycle from 0 to 95%
         for(float duty = 0.0; duty < 1.0; duty += 0.05){
             pwm_led.write(duty);
-            printf("Writing PWM: %g \n", duty);
+            // printf("Writing PWM: %g \n", duty);
             ThisThread::sleep_for(PWM_RATE);
         }
 
