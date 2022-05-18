@@ -1,24 +1,32 @@
 #include "../include/acs723.h"
 
-// Initialize a pins to perform analog input and digital output functions
-// AnalogIn   ain(PA_0);
-// DigitalOut dout(LED1);
+float measure_voltage(AnalogIn ain){
+    
+    float ref_v = ain.get_reference_voltage();
+    printf("measure_voltage: ADC Vref %f\n", ref_v);
 
-// int main(void)
-// {
-//     while (1) {
-//         // test the voltage on the initialized analog pin
-//         //  and if greater than 0.3 * VCC set the digital pin
-//         //  to a logic 1 otherwise a logic 0
-//         if (ain > 0.3f) {
-//             dout = 1;
-//         } else {
-//             dout = 0;
-//         }
+    if (ref_v < REF_V){
+        printf("measure_voltage: WARNING: V_REF CONFIG %f\n", ref_v);
+    } 
 
-//         // print the percentage and 16 bit normalized values
-//         printf("percentage: %3.3f%%\n", ain.read() * 100.0f);
-//         printf("normalized: 0x%04X \n", ain.read_u16());
-//         ThisThread::sleep_for(200);
-//     }
-// }
+    float avrg_v = 0; 
+    for(int i = 0; i < NUM_ADC_SAMPLES; i++ ){
+        avrg_v += ain.read();
+    }
+
+    avrg_v = avrg_v / NUM_ADC_SAMPLES; 
+    float voltage = avrg_v*ref_v;
+    printf("measure_voltage: voltage: %g \n", (voltage));
+
+    return voltage;
+
+}
+
+float measure_currrent(AnalogIn ain){
+
+    float voltage = measure_voltage(ain);
+    float current = voltage - NO_LOAD_V; 
+    printf("measure_currrent: current: %g \n", current);
+
+    return current;
+}
