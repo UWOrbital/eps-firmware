@@ -2,6 +2,8 @@
 
 A repository for all EPS related firmware. 
 
+There are currently two main embedded frameworks/sdks supported, primarily [Zephyr](https://docs.zephyrproject.org/2.6.0/introduction/index.html) however in the past [Mbed](https://os.mbed.com/mbed-os/) was used.
+
 # Zephyr RTOS Setup
 
 Follow the guide [here](https://docs.zephyrproject.org/2.6.0/getting_started/index.html) to setup Zephyr RTOS, **see section beloow on installing a toolchain** when you get to that step. 
@@ -52,7 +54,7 @@ cd zephyr-apps
 source venv/bin/activate
 ```
 
-# Mbed Setup
+# Mbed OS Setup
 
 For the firmware, we are going to use mbed-os to provide drivers and APIs for a varierty of functions. 
 To get started I would recommend installing Mbed Studio - however the online compiler and CLI are also viable options. 
@@ -71,3 +73,25 @@ More information on different setup can be found here: https://os.mbed.com/docs/
 Once you see a `.mbed` file and `mbed-os` folder in the directory you know mbed is imported. 
 In mbed studio select a target board to build and build profile as debug. Plug in your board and know you 
 should be able to build and flash (Note: When your board is connected there is a green USB icon and output terminal). 
+
+# VsCode Configuration
+
+To include custom libraries such as the zephyr rtos base, add the path to the `includePath` in the `.vscode/c_cpp_properties.json` file [link](https://code.visualstudio.com/docs/cpp/config-msvc#_cc-configurations).
+```json
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**", "~/zephyrproject/zephyr/**"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "gnu17",
+            "cppStandard": "gnu++14",
+            "intelliSenseMode": "linux-gcc-x64"
+        }
+    ],
+    "version": 4
+}
+```

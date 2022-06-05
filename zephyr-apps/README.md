@@ -32,3 +32,9 @@ west flash
 [Reference](https://docs.zephyrproject.org/2.6.0/boards/arm/blackpill_f411ce/doc/index.html)
 
 Connect a USB-C cable and the board should power ON. Force the board into DFU mode by keeping the BOOT0 switch pressed while pressing and releasing the NRST switch.
+
+# Using an overlay file
+
+```shell
+west build -b blackpill_f411ce adc --pristine -DDTC_OVERLAY_FILE=boards/stm32l496g_disco.overlay
+```
