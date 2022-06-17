@@ -1,38 +1,52 @@
 #!/bin/bash
 
 usage() {
-    echo "usage: -p <project>"
+    echo "usage: -p <project> -b <board> -o <overlay>"
 }
 
-no_args="true"
-while getopts :p: flag; do
+project=""
+board=""
+with_overlay="false"
+while getopts "p:b:o:" flag; do
     case "${flag}" in
-    p)
-        project=${OPTARG}
-        no_args="false"
-
-        # Remove the build folder if it exists
-        rm -rf build
-
-        # Config $ZEPHYR_BASE
-        # This is the base path of the Zephyr project installation
-        source ~/zephyrproject/zephyr/zephyr-env.sh 
-
-        # Build app for blackpill
-        west build -b blackpill_f411ce $project --pristine
-
-        # Flash application to board
-        west flash
-
-        ;;
-    ?)
-        echo "Please pass in an zephyr app to build"
-        exit 1
-        ;;
+        p)
+            project=${OPTARG}
+            ;;
+        b)
+            board=${OPTARG}
+            ;;
+        o)
+            overlay=${OPTARG}
+            with_overlay="true"
+            ;;
+        ?)
+            echo "Invalid argument"
+            exit 1
+            ;;
     esac
 done
 
-[[ "$no_args" == "true" ]] && {
+[[ "$project" == "" || "$board" == "" ]] && {
     usage
     exit 1
 }
+
+build_args="-b $board $project"
+[[ "$board" == "blackpill_f411ce" ]] && {
+    build_args+="--pristine"
+}
+
+[[ $with_overlay = "true" ]] && {
+    build_args+=" -- -DDTC_OVERLAY_FILE=$overlay"
+}
+
+# source Zephyr project installation
+source ~/zephyrproject/zephyr/zephyr-env.sh
+
+echo "building west build $build_args"
+
+# build app
+west build $build_args
+
+# flash app to board
+west flash
