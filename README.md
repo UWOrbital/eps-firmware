@@ -35,6 +35,24 @@ export ZEPHYR_TOOLCHAIN_VARIANT=gnuarmemb
 export GNUARMEMB_TOOLCHAIN_PATH=~/toolchains/gcc-arm-none-eabi-10-2020-q4-major/
 ```
 
+## Using Minicom
+
+On linux/OSX you can utilize minicom for logging output, to setup: 
+
+```
+sudo apt install minicom -y
+```
+
+To view availible devices:
+```
+ls /dev
+```
+
+Often you'll find a device under `/dev/ttyACM0` for example, then you can connect and log the serial output with: 
+```
+minicom -D /dev/ttyACM0
+```
+
 ## Using a Virtual Environment
 
 Alternatively, you can use a virtual environment to isolate your dependencies. 
