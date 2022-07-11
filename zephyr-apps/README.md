@@ -17,12 +17,12 @@ app
 
 To perform a new clean build of the application and flash the board, run the following command:
 ```shell
-bash new_build.sh -p <project>
+bash new_build.sh -p <project> -b <board> -o <overlay>
 ```
 
 Example:
 ```shell
-bash new_build.sh -p blinky
+bash new_build.sh -p blinky -b blackpill_f411ce
 ```
 
 # Build & Flash Manually
@@ -33,6 +33,21 @@ rm -rf build
 source ~/zephyrproject/zephyr/zephyr-env.sh 
 west build -b blackpill_f411ce <project> --pristine
 west flash
+```
+
+# Overlays
+Absolute path of overlay(s) needs to be passed to `west build`. `pwd` command can be used to obtain absolute path to current directory in most unix based terminals.
+
+Example:
+```shell
+west build -b stm32l476g_disco gpio --pristine -DDTC_OVERLAY_FILE=${PWD}/overlays/stm32l476g_disco.overlay
+```
+
+`new_build.sh` inserts absolute path to directory containing the `new_build.sh` before overlay argument.
+
+Example:
+```shell
+bash new_build.sh -p gpio -b stm32l476g_disco -o overlays/stm32l476g_disco.overlay
 ```
 
 # Flashing the Black Pill

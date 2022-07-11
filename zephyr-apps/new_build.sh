@@ -34,7 +34,7 @@ done
 build_args="-b $board $project --pristine "
 
 [[ $with_overlay = "true" ]] && {
-    build_args+="-DDTC_OVERLAY_FILE=$overlay"
+    build_args+="-DDTC_OVERLAY_FILE=${PWD}/$overlay"
 }
 
 # source Zephyr project installation
