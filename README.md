@@ -43,7 +43,7 @@ On linux/OSX you can utilize minicom for logging output, to setup:
 sudo apt install minicom -y
 ```
 
-To view availible devices:
+To view availible devices:ou
 ```
 ls /dev
 ```
@@ -51,6 +51,12 @@ ls /dev
 Often you'll find a device under `/dev/ttyACM0` for example, then you can connect and log the serial output with: 
 ```
 minicom -D /dev/ttyACM0
+```
+
+**Note:** If you are using **Ubuntu 22.04** you may be unable to see the USB device `/dev/ttyUSB0` which is the device of the serial to USB converter.
+In order to solve this, run the following command: 
+```
+sudo apt remove brltty
 ```
 
 ## Using a Virtual Environment
