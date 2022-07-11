@@ -33,7 +33,7 @@ done
 
 build_args="-b $board $project"
 [[ "$board" == "blackpill_f411ce" ]] && {
-    build_args+="--pristine"
+    build_args+=" --pristine"
 }
 
 [[ $with_overlay = "true" ]] && {
@@ -43,7 +43,10 @@ build_args="-b $board $project"
 # source Zephyr project installation
 source ~/zephyrproject/zephyr/zephyr-env.sh
 
-echo "building west build $build_args"
+echo "New Build: $build_args"
+
+# Remove the build folder if it exists
+rm -rf build
 
 # build app
 west build $build_args
