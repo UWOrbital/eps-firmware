@@ -6,6 +6,8 @@
 
 #include <zephyr/zephyr.h>
 #include <zephyr/drivers/gpio.h>
+#include <zephyr/logging/log.h>
+LOG_MODULE_REGISTER(main, LOG_LEVEL_INF);
 
 /* 1000 msec = 1 sec */
 #define SLEEP_TIME_MS   10
@@ -32,5 +34,6 @@ void main(void)
 			return;
 		}
 		k_msleep(SLEEP_TIME_MS);
+		LOG_INF("gpio...");
 	}
 }
