@@ -31,13 +31,10 @@ done
     exit 1
 }
 
-build_args="-b $board $project"
-[[ "$board" == "blackpill_f411ce" ]] && {
-    build_args+=" --pristine"
-}
+build_args="-b $board $project --pristine "
 
 [[ $with_overlay = "true" ]] && {
-    build_args+=" -- -DDTC_OVERLAY_FILE=$overlay"
+    build_args+="-DDTC_OVERLAY_FILE=$overlay"
 }
 
 # source Zephyr project installation
