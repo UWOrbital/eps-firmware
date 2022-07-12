@@ -12,10 +12,10 @@ LOG_MODULE_REGISTER(timer, LOG_LEVEL_INF);
 /* timer expiry function */
 void log_time(struct k_timer *timer_id)
 {
-	unsigned period, uptime;
-	period = k_ticks_to_ms_ceil32(timer_id->period.ticks);
-	uptime = k_uptime_get();
-	LOG_INF("timer(period=%dms): %d", period, uptime);
+	LOG_INF(
+		"timer(period=%dms): %d",
+		k_ticks_to_ms_ceil32(timer_id->period.ticks),
+		(unsigned) k_uptime_get());
 }
 
 /* timer definition(s) */
