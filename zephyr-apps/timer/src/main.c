@@ -19,7 +19,7 @@ static const struct gpio_dt_spec sw = GPIO_DT_SPEC_GET(SW0_NODE, gpios);
 
 void main(void)
 {
-	int ret;
+	int ret, time;
 	int rising_edge = 1;
 	LOG_INF("timer started\n");
 
@@ -42,7 +42,8 @@ void main(void)
 		else if (rising_edge == 1 && ret == 1)
 		{
 			rising_edge = 0;
-			LOG_INF("milliseconds since boot: %lld\n", k_uptime_get());
+			time = k_uptime_get()
+			LOG_INF("milliseconds since boot: %lld\n", time);
 		}
 	}
 }
