@@ -1,0 +1,6 @@
+/ {
+    zephyr,user {
+        signal-gpios = <&gpioc 14 GPIO_ACTIVE_HIGH>;
+    };
+};
+

@@ -1,0 +1,6 @@
+#include <zephyr/dt-bindings/gpio/gpio.h>
+/ {
+    zephyr,user {
+        signal-gpios = <&gpiob 3 GPIO_ACTIVE_HIGH>;
+    };
+};
