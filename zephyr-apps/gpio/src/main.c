@@ -10,7 +10,7 @@
 LOG_MODULE_REGISTER(main, LOG_LEVEL_INF);
 
 /* 1000 msec = 1 sec */
-#define SLEEP_TIME_MS   10
+#define SLEEP_TIME_MS   1000
 
 const struct gpio_dt_spec sig0 =
         GPIO_DT_SPEC_GET(DT_PATH(zephyr_user), signal_gpios);
