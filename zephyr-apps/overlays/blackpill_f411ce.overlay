@@ -1,7 +1,16 @@
+#include <zephyr/dt-bindings/adc/adc.h>
+
 / {
     zephyr,user {
         signal-gpios = <&gpioc 14 GPIO_ACTIVE_HIGH>;
-		io-channels = <&adc1 0>;
+		io-channels = <&adc1 4>;
     };
+
+};
+
+&adc1 {
+	pinctrl-0 = <&adc1_in4_pa4>;
+	pinctrl-names = "default";
+	status = "okay";
 };
 
