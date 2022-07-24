@@ -8,7 +8,7 @@
 LOG_MODULE_REGISTER(mppt, LOG_LEVEL_INF);
 
 /* 1000 msec = 1 sec */
-#define SLEEP_TIME_MS   1000
+#define SLEEP_TIME_MS   2500
 
 /* The devicetree node identifier for the "led0" alias. */
 #define LED0_NODE DT_ALIAS(led0)
@@ -31,19 +31,23 @@ void main(void)
 		return;
 	}
 
-	setup_adc();
+	ret = setup_adc();
+	if (ret < 0) {
+		return;
+	}
 
 	while (1) {
 
-		poll_adc_channels();
+		LOG_INF("Running Main()...");
+		
+		read_adc_channels();
 
 		ret = gpio_pin_toggle_dt(&led);
 		if (ret < 0) {
 			return;
 		}
+		
 		k_msleep(SLEEP_TIME_MS);
-		LOG_INF("Running Main()...");
 
-		k_sleep(K_MSEC(1000));
 	}
 }

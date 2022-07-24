@@ -76,12 +76,10 @@ static void prepare_sequence(struct adc_sequence *sequence,
 	}
 }
 
-static void print_millivolts(int32_t value,
-			     uint16_t vref_mv,
-			     uint8_t resolution,
-			     const struct adc_dt_spec *dt_spec)
-{
+static int32_t get_millivolts(int32_t value, uint16_t vref_mv, uint8_t resolution, const struct adc_dt_spec *dt_spec){
+	
 	enum adc_gain gain = ADC_GAIN;
+	int32_t mv = value;
 
 	if (dt_spec->channel_cfg_dt_node_exists) {
 		gain = dt_spec->channel_cfg.gain;
@@ -95,27 +93,31 @@ static void print_millivolts(int32_t value,
 		}
 	}
 
-	adc_raw_to_millivolts(vref_mv, gain, resolution, &value);
-	LOG_INF(" = %d mV", value);
+	adc_raw_to_millivolts(vref_mv, gain, resolution, &mv);
+
+	return mv;
 }
 
-void setup_adc(){
+int8_t setup_adc(){
 	
 	/* Configure channels individually prior to sampling. */
 	for (uint8_t i = 0; i < ARRAY_SIZE(adc_channels); i++) {
 		if (!device_is_ready(adc_channels[i].dev)) {
-			LOG_INF("ADC device not found\n");
-			return;
+			LOG_ERR("ADC device not found \n");
+			return -ENODEV;
 		}
 
 		configure_channel(&adc_channels[i], &vref_mv[i]);
+		LOG_INF("ADC(%s), channel [%d]: Configured", adc_labels[i], adc_channels[i].channel_id);
 	}
 
+	return 0;
 }
 
-void poll_adc_channels(){
+void read_adc_channels(){
 
 	int err;
+	int32_t mv = 0;  
 	
 	for (uint8_t i = 0; i < ARRAY_SIZE(adc_channels); i++) {
 		LOG_INF("- %s, channel %d: ", adc_labels[i], adc_channels[i].channel_id);
@@ -124,22 +126,40 @@ void poll_adc_channels(){
 
 		err = adc_read(adc_channels[i].dev, &sequence);
 		if (err < 0) {
-			LOG_INF("error %d\n", err);
+			LOG_ERR("error %d\n", err);
 			continue;
-		} else {
-			LOG_INF("%d", sample_buffer[0]);
 		}
 
 		/*
-		* Convert raw reading to millivolts if the reference
-		* voltage is known.
+		* Convert raw reading to millivolts if the reference voltage is known.
 		*/
 		if (vref_mv[i] > 0) {
-			print_millivolts(sample_buffer[0],
-			vref_mv[i],
-			sequence.resolution,
-			&adc_channels[i]);
+			mv = get_millivolts(sample_buffer[0], vref_mv[i], sequence.resolution, &adc_channels[i]);
 		}
+
+		LOG_INF("millivolts = %d mV", mv);
 	}
+}
+
+int32_t read_specific_adc_channel_mv(uint8_t channel_index){
+
+	int err;
+	int32_t mv = 0;  
+	
+	prepare_sequence(&sequence, &adc_channels[channel_index]);
+
+	err = adc_read(adc_channels[channel_index].dev, &sequence);
+	if (err < 0) {
+		LOG_ERR("error %d\n", err);
+	}
+
+	/*
+	* Convert raw reading to millivolts if the reference voltage is known.
+	*/
+	if (vref_mv[channel_index] > 0) {
+		mv = get_millivolts(sample_buffer[0], vref_mv[channel_index], sequence.resolution, &adc_channels[channel_index]);
+	}
+
+	return mv;
 }
 

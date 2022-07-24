@@ -19,6 +19,8 @@
 #define ADC_REFERENCE		ADC_REF_INTERNAL
 #define ADC_ACQUISITION_TIME	ADC_ACQ_TIME_DEFAULT
 
-void setup_adc();
+int8_t setup_adc();
 
-void poll_adc_channels();
+void read_adc_channels();
+
+int32_t read_specific_adc_channel_mv(uint8_t channel_index);
