@@ -6,6 +6,12 @@ There are currently two main embedded frameworks/sdks supported, primarily [Zeph
 
 # Zephyr RTOS Setup
 
+## Windows / Ubuntu Dual Boot
+
+If you choose to develop on linux, here is a guide to dual boot your system to run both windows and ubuntu: [Windows/Ubuntu Dual Boot](https://itsfoss.com/install-ubuntu-1404-dual-boot-mode-windows-8-81-uefi/)
+
+## Zephyr RTOS Install
+
 Follow the guide [here](https://docs.zephyrproject.org/2.6.0/getting_started/index.html) to setup Zephyr RTOS, **see section beloow on installing a toolchain** when you get to that step. 
 
 See instructions below on installing the python dependencies in a virtual environment, otherwise follow the setup oultined in the [Getting Started Guide](https://docs.zephyrproject.org/2.6.0/getting_started/index.html).
@@ -14,12 +20,15 @@ Notes:
 - It is recommended you use either OSX or Linux (Ubunutu is recommended) for development
 - It is recommneded you install the Zephyr base at the root of your user (`~/zephyrproject`)
 
+See the [Beyond Getting Started Guide](https://docs.zephyrproject.org/3.0.0/guides/beyond-GSG.html) for more information on the setup process. 
+
 ## Installing a 3rd Party Toolchain
 
-Reference: https://docs.zephyrproject.org/latest/getting_started/toolchain_3rd_party_x_compilers.html#gnu-arm-embedded
+[Reference](https://docs.zephyrproject.org/3.0.0/getting_started/toolchain_3rd_party_x_compilers.html)
 
 Going to use the GNU arm embedded toolchain since it supports ARM based SoCs.
-Install gcc-arm-none-eabi-10-2020-q4-major from the GNU website. 
+Install [gcc-arm-none-eabi-10-2020-q4-major](https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm/downloads/product-release) from the GNU website. 
+
 Extract and copy the files: 
 ```
 tar -xf gcc-arm-none-eabi-10-2020-q4-major-x86_64-linux.tar.bz2
@@ -48,9 +57,15 @@ To view availible devices:
 ls /dev
 ```
 
-Often you'll find a device under `/dev/ttyACM0` for example, then you can connect and log the serial output with: 
+Often you'll find a device under `/dev/ttyUSB0` or possibly `/dev/ttyACM0` for example, then you can connect and log the serial output with: 
 ```
-minicom -D /dev/ttyACM0
+sudo minicom -D /dev/ttyUSB0
+```
+
+**Note:** If you are using **Ubuntu 22.04** you may be unable to see the USB device `/dev/ttyUSB0` which is the device of the serial to USB converter.
+In order to solve this, run the following command: 
+```
+sudo apt remove brltty
 ```
 
 ## Using a Virtual Environment

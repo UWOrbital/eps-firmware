@@ -1,6 +1,24 @@
+#include <zephyr/dt-bindings/adc/adc.h>
+
 / {
     zephyr,user {
         signal-gpios = <&gpioc 14 GPIO_ACTIVE_HIGH>;
+
+		/* 
+		Specify the channels to use, corresponds to ADC0-9
+		which are pins PA0-7, PB0, PB1
+		*/ 
+		io-channels = <&adc1 1>, <&adc1 4>;
     };
+};
+
+// Update configuration from board dts file
+&adc1 {
+	
+	// Define each pin on the board to be used for ADC here
+	pinctrl-0 = <&adc1_in1_pa1>, <&adc1_in4_pa4>;
+	
+	pinctrl-names = "default";
+	status = "okay";
 };
 
