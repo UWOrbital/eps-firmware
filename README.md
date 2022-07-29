@@ -24,10 +24,11 @@ See the [Beyond Getting Started Guide](https://docs.zephyrproject.org/3.0.0/guid
 
 ## Installing a 3rd Party Toolchain
 
-Reference: https://docs.zephyrproject.org/3.0.0/getting_started/toolchain_3rd_party_x_compilers.html
+[Reference](https://docs.zephyrproject.org/3.0.0/getting_started/toolchain_3rd_party_x_compilers.html)
 
 Going to use the GNU arm embedded toolchain since it supports ARM based SoCs.
 Install [gcc-arm-none-eabi-10-2020-q4-major](https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm/downloads/product-release) from the GNU website. 
+
 Extract and copy the files: 
 ```
 tar -xf gcc-arm-none-eabi-10-2020-q4-major-x86_64-linux.tar.bz2

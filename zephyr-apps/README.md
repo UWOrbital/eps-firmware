@@ -13,7 +13,7 @@ app
     └── main.c
 ```
 
-**Blackpill Reference:** https://docs.zephyrproject.org/2.6.0/boards/arm/blackpill_f411ce/doc/index.html
+[Blackpill Reference](https://docs.zephyrproject.org/2.6.0/boards/arm/blackpill_f411ce/doc/index.html)
 
 # Flash & Build Script
 
