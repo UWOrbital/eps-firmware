@@ -48,10 +48,36 @@ See the [Beyond Getting Started Guide](https://docs.zephyrproject.org/3.0.0/guid
 
 While running some of the steps you may encounter some errors, below are some different steps to try instead: 
 
-When running the pip install, add the --user flag 
+[1] When running the pip install, add the --user flag 
 ```
 pip3 install -r ~/zephyrproject/zephyr/scripts/requirements.txt --user
 ```
+
+[2] When trying to build a application you may get the following error: 
+```
+FileNotFoundError: [Errno 2] No such file or directory: 'dfu-util'
+```
+
+Try installing `dfu-util` using homebrew: 
+```
+brew install dfu-util
+```
+
+[3] When trying to brew install packages you may get an error as follows: 
+```
+Linking /usr/local/Cellar/libmagic/5.43... 
+Error: Could not symlink share/misc/magic.mgc
+Target /usr/local/share/misc/magic.mgc
+```
+
+Try running the following: 
+```
+sudo chown -R `whoami`:admin /usr/local/share
+brew link --overwrite libmagic
+```
+
+Additional steps if that does not work can be found here: [Homebrew: Could not symlink](https://stackoverflow.com/questions/26647412/homebrew-could-not-symlink-usr-local-bin-is-not-writable)
+
 
 # Additional Install Instructions
 
@@ -78,7 +104,16 @@ In order to solve this, run the following command:
 ```
 sudo apt remove brltty
 ```
+
+## Setting Up SSH Keys
+
+When cloning the repository, clone using `ssh`. If you get a *permission denied* when cloning using SSH or when trying to push to the repository after being added, you may need to setup and add your SSH keys for your local machine, follow the guide below: 
+
+[Generate SSH Keys](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
+
 ## Installing a 3rd Party Toolchain
+
+(**Note:** This is not required, only for reference)
 
 [Reference](https://docs.zephyrproject.org/3.0.0/getting_started/toolchain_3rd_party_x_compilers.html)
 
@@ -132,6 +167,8 @@ source ~/zephyrproject/.venv/bin/activate
 ```
 
 # Mbed OS Setup
+
+(**Note:** This is not required, only for reference)
 
 For the firmware, we are going to use mbed-os to provide drivers and APIs for a varierty of functions. 
 To get started I would recommend installing Mbed Studio - however the online compiler and CLI are also viable options. 
