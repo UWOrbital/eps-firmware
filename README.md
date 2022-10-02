@@ -2,47 +2,84 @@
 
 A repository for all EPS related firmware. 
 
-There are currently two main embedded frameworks/sdks supported, primarily [Zephyr](https://docs.zephyrproject.org/2.6.0/introduction/index.html) however in the past [Mbed](https://os.mbed.com/mbed-os/) was used.
+There are currently two main embedded frameworks/sdks supported, primarily [Zephyr](https://docs.zephyrproject.org/latest/introduction/index.html) however in the past [Mbed](https://os.mbed.com/mbed-os/) was used.
+
+Current development uses the Zephyr RTOS.
 
 # Zephyr RTOS Setup
+
+For developing using Zephyr it is recommended you use either OSX or Linux (Ubuntu in particular) as your OS. If you are using Windows it is recommended you dual boot your system to run both Ubuntu and Windows.
 
 ## Windows / Ubuntu Dual Boot
 
 If you choose to develop on linux, here is a guide to dual boot your system to run both windows and ubuntu: [Windows/Ubuntu Dual Boot](https://itsfoss.com/install-ubuntu-1404-dual-boot-mode-windows-8-81-uefi/)
 
-## Zephyr RTOS Install
+## Ubuntu Install
 
-Follow the guide [here](https://docs.zephyrproject.org/2.6.0/getting_started/index.html) to setup Zephyr RTOS, **see section beloow on installing a toolchain** when you get to that step. 
+Follow the guide [here](https://docs.zephyrproject.org/latest/develop/getting_started/index.html) to setup Zephyr RTOS, ensure you are following the Ubuntu instructions selected.
 
-See instructions below on installing the python dependencies in a virtual environment, otherwise follow the setup oultined in the [Getting Started Guide](https://docs.zephyrproject.org/2.6.0/getting_started/index.html).
+Once you reach the section *Get Zephyr and install Python dependencies*, it is recommended you try and install within a virtual environment. 
+
+**Note**: If you run into issues with installing within a virtual environment, try installing globally. 
+
+After either installing within a virtual environment or globally, resume following the Zephyr Getting Started Guide from the *Install Zephyr SDK* section.  
 
 Notes: 
-- It is recommended you use either OSX or Linux (Ubunutu is recommended) for development
 - It is recommneded you install the Zephyr base at the root of your user (`~/zephyrproject`)
 
 See the [Beyond Getting Started Guide](https://docs.zephyrproject.org/3.0.0/guides/beyond-GSG.html) for more information on the setup process. 
 
-## Installing a 3rd Party Toolchain
+## OSX Install 
 
-[Reference](https://docs.zephyrproject.org/3.0.0/getting_started/toolchain_3rd_party_x_compilers.html)
+Follow the guide [here](https://docs.zephyrproject.org/latest/develop/getting_started/index.html) to setup Zephyr RTOS, ensure you are following the macOS instructions selected.
 
-Going to use the GNU arm embedded toolchain since it supports ARM based SoCs.
-Install [gcc-arm-none-eabi-10-2020-q4-major](https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm/downloads/product-release) from the GNU website. 
+Once you reach the section *Get Zephyr and install Python dependencies*, it is recommended you try and install within a virtual environment. 
 
-Extract and copy the files: 
+**Note**: If you run into issues with installing within a virtual environment, try installing globally. 
+
+After either installing within a virtual environment or globally, resume following the Zephyr Getting Started Guide from the *Install Zephyr SDK* section.  
+
+Notes: 
+- It is recommneded you install the Zephyr base at the root of your user (`~/zephyrproject`)
+
+See the [Beyond Getting Started Guide](https://docs.zephyrproject.org/3.0.0/guides/beyond-GSG.html) for more information on the setup process. 
+
+### Common Errors and Notes
+
+While running some of the steps you may encounter some errors, below are some different steps to try instead: 
+
+[1] When running the pip install, add the --user flag 
 ```
-tar -xf gcc-arm-none-eabi-10-2020-q4-major-x86_64-linux.tar.bz2
-mkdir ~/toolchains
-cp -r gcc-arm-none-eabi-10-2020-q4-major ~toolchains 
+pip3 install -r ~/zephyrproject/zephyr/scripts/requirements.txt --user
 ```
 
-Once you have the toolchain, you can add it to your PATH, by setting the following enviroment variables.
+[2] When trying to build a application you may get the following error: 
+```
+FileNotFoundError: [Errno 2] No such file or directory: 'dfu-util'
+```
 
-Add to `~/.zshrc` or `~/.bashrc`:
+Try installing `dfu-util` using homebrew: 
 ```
-export ZEPHYR_TOOLCHAIN_VARIANT=gnuarmemb
-export GNUARMEMB_TOOLCHAIN_PATH=~/toolchains/gcc-arm-none-eabi-10-2020-q4-major/
+brew install dfu-util
 ```
+
+[3] When trying to brew install packages you may get an error as follows: 
+```
+Linking /usr/local/Cellar/libmagic/5.43... 
+Error: Could not symlink share/misc/magic.mgc
+Target /usr/local/share/misc/magic.mgc
+```
+
+Try running the following: 
+```
+sudo chown -R `whoami`:admin /usr/local/share
+brew link --overwrite libmagic
+```
+
+Additional steps if that does not work can be found here: [Homebrew: Could not symlink](https://stackoverflow.com/questions/26647412/homebrew-could-not-symlink-usr-local-bin-is-not-writable)
+
+
+# Additional Install Instructions
 
 ## Using Minicom
 
@@ -68,26 +105,70 @@ In order to solve this, run the following command:
 sudo apt remove brltty
 ```
 
-## Using a Virtual Environment
+## Setting Up SSH Keys
 
-Alternatively, you can use a virtual environment to isolate your dependencies. 
+When cloning the repository, clone using `ssh`. If you get a *permission denied* when cloning using SSH or when trying to push to the repository after being added, you may need to setup and add your SSH keys for your local machine, follow the guide below: 
 
-Run the following command to create a virtual environment:
+[Generate SSH Keys](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
 
-Note: `$ZEPHYR_BASE` refers to the absolute path to the Zephyr base installation.
-```shell
-cd zephyr-apps
-python -m venv venv
-pip install -r $ZEPHYR_BASE/scripts/requirements.txt
+## Installing a 3rd Party Toolchain
+
+(**Note:** This is not required, only for reference)
+
+[Reference](https://docs.zephyrproject.org/3.0.0/getting_started/toolchain_3rd_party_x_compilers.html)
+
+Going to use the GNU arm embedded toolchain since it supports ARM based SoCs.
+Install [gcc-arm-none-eabi-10-2020-q4-major](https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm/downloads/product-release) from the GNU website. 
+
+Extract and copy the files: 
+```
+tar -xf gcc-arm-none-eabi-10-2020-q4-major-x86_64-linux.tar.bz2
+mkdir ~/toolchains
+cp -r gcc-arm-none-eabi-10-2020-q4-major ~toolchains 
 ```
 
-Activiate the virtual environment:
-```shell
-cd zephyr-apps
-source venv/bin/activate
+Once you have the toolchain, you can add it to your PATH, by setting the following enviroment variables.
+
+Add to `~/.zshrc` or `~/.bashrc`:
+```
+export ZEPHYR_TOOLCHAIN_VARIANT=gnuarmemb
+export GNUARMEMB_TOOLCHAIN_PATH=~/toolchains/gcc-arm-none-eabi-10-2020-q4-major/
+```
+
+## Virtual Environments
+
+### Create Virtual Enviroment (macOS)
+
+Create: 
+```
+python3 -m venv ~/zephyrproject/.venv
+```
+
+Activate: 
+```
+source ~/zephyrproject/.venv/bin/activate
+```
+
+### Create Virtual Enviroment (Ubuntu)
+
+Install virtualenv:
+```
+sudo apt install python3-venv
+```
+
+Create:
+```
+python3 -m venv ~/zephyrproject/.venv
+```
+
+Activate:
+```
+source ~/zephyrproject/.venv/bin/activate
 ```
 
 # Mbed OS Setup
+
+(**Note:** This is not required, only for reference)
 
 For the firmware, we are going to use mbed-os to provide drivers and APIs for a varierty of functions. 
 To get started I would recommend installing Mbed Studio - however the online compiler and CLI are also viable options. 

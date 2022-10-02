@@ -1,6 +1,5 @@
 #include <zephyr/zephyr.h> 
 #include <zephyr/drivers/gpio.h>
-#include <drivers/adc.h>
 #include <zephyr/logging/log.h>
 
 #include "adc.h"
