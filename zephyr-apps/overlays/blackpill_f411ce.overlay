@@ -2,7 +2,7 @@
 
 / {
     zephyr,user {
-        signal-gpios = <&gpioc 14 GPIO_ACTIVE_HIGH>;
+        signal-gpios = <&gpioc 14 GPIO_ACTIVE_HIGH>, <&gpioc 13 GPIO_ACTIVE_HIGH>;
 
 		/* 
 		Specify the channels to use, corresponds to ADC0-9

@@ -9,7 +9,6 @@
 #endif
 
 int get_efuse_voltage();
-
 void set_eFuse_low(); 
 void set_eFuse_high();
 
