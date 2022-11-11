@@ -1,5 +1,5 @@
 #include "eFuse.h"
-LOG_MODULE_REGISTER(eFuse, LOG_LEVEL_INF);
+LOG_MODULE_REGISTER(mppt_eFuse, LOG_LEVEL_INF);
 
 /* 1000 msec = 1 sec */
 #define SLEEP_TIME_MS   1000
@@ -14,16 +14,19 @@ int get_efuse_voltage(void)
     int current_state;
 
     if (!device_is_ready(sig0.port)) {
-		return NULL;
+		return -1;
 	}
 
     ret = gpio_pin_configure_dt(&sig0, GPIO_INPUT);
 	if (ret < 0) {
-		return NULL;
+		return -1;
     }
     
-    current_state = gpio_port_get(&sig0);
-    LOG_INF("E-fuse current state is {0}\n", current_state);
+    current_state = gpio_pin_get_dt(&sig0);
+    if (current_state < 0) {
+        return -1;
+    }
+    LOG_INF("E-fuse current state is (%i)\n", current_state);
     return current_state;
 }
 
@@ -42,7 +45,8 @@ void set_eFuse_low()
 		return;
 	}
         
-    if(current_state == 0 || current_state == NULL) {
+    if(current_state != 1) {
+        LOG_INF("E-fuse pin is already low\n");
         return;
     }
     else
@@ -58,7 +62,7 @@ void set_eFuse_low()
 }
 
 //Take E-Fuse pins off open drain mode
-void set_eFuse_high();
+void set_eFuse_high()
 {
     int ret;
     int current_state = get_efuse_voltage();
@@ -67,10 +71,17 @@ void set_eFuse_high();
 		return;
 	}
 
-	ret = gpio_pin_configure_dt(&sig0, GPIO_OUTPUT);
-	if (ret < 0) {
-		return;
-	}
+    if(current_state != 0) {
+        LOG_INF("E-fuse pin is already high\n");
+        return;
+    }
+    else
+    {
+        ret = gpio_pin_configure_dt(&sig0, GPIO_OUTPUT);
+        if (ret < 0) {
+            return;
+        } 
+    }
     
     LOG_INF("E-fuse is not in Open Drain mode\n");
 }
