@@ -15,6 +15,7 @@ static struct adc_sequence sequence = {
 	.buffer      = &buf,
 	/* buffer size in bytes, not number of samples */
 	.buffer_size = sizeof(buf),
+	.resolution = 12, // blackpill uses 12 bit resolution
 };
 
 int8_t setup_adc(){
@@ -56,19 +57,9 @@ void read_adc_channels(){
 		if (err < 0) {
 			LOG_INF("Could not read (%d)\n", err);
 			continue;
-		} else {
-			LOG_INF("%"PRId16, buf);
 		}
 
-		/* conversion to mV may not be supported, skip if not */
-		val_mv = buf;
-		err = adc_raw_to_millivolts_dt(&adc_channels[i],
-							&val_mv);
-		if (err < 0) {
-			LOG_INF(" (value in mV not available)\n");
-		} else {
-			LOG_INF(" = %"PRId32" mV\n", val_mv);
-		}
+		LOG_INF(" Raw ADC = %"PRId32"\n", buf);
 	}
 }
 
