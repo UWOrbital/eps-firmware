@@ -1,9 +1,9 @@
-#include <zephyr/zephyr.h> 
+#include <zephyr/kernel.h>
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/logging/log.h>
 
 #include "adc.h"
-#include "efuse.h"
+#include "eFuse.h"
 
 LOG_MODULE_REGISTER(mppt, LOG_LEVEL_INF);
 
@@ -36,13 +36,25 @@ void main(void)
 	// 	return;
 	// }
 
-	//set_eFuse_high()
-	//set_eFuse_low()
-
+	// toggle for testing
+	uint8_t toggle = 0; 
+	int gpio_state = 0;
 
 	while (1) {
 
-		LOG_INF("Running Main()...");
+		LOG_INF("Running Main(%"PRId32")...", toggle);
+
+		if (toggle == 1) {
+			LOG_INF("set_eFuse_high()");
+			set_eFuse_high();
+		} else{
+			LOG_INF("set_eFuse_low()");
+			set_eFuse_low();
+		}
+
+		// read gpio pin c14 
+		gpio_state = get_efuse_voltage();
+		LOG_INF("gpio = %"PRId32" state\n", gpio_state);
 		
 		//read_adc_channels();
 
@@ -52,6 +64,7 @@ void main(void)
 		}
 		
 		k_msleep(SLEEP_TIME_MS);
+		toggle ^= 1; // flip toggle bit
 
 	}
 }
