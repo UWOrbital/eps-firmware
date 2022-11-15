@@ -3,6 +3,7 @@
 #include <zephyr/logging/log.h>
 
 #include "adc.h"
+#include "efuse.h"
 
 LOG_MODULE_REGISTER(mppt, LOG_LEVEL_INF);
 
@@ -34,6 +35,10 @@ void main(void)
 	// if (ret < 0) {
 	// 	return;
 	// }
+
+	//set_eFuse_high()
+	//set_eFuse_low()
+
 
 	while (1) {
 
