@@ -1,9 +1,6 @@
 #include "eFuse.h"
 LOG_MODULE_REGISTER(mppt_eFuse, LOG_LEVEL_INF);
 
-/* 1000 msec = 1 sec */
-#define SLEEP_TIME_MS   1000
-
 //Defaults pin c14 to active at high voltage
 const struct gpio_dt_spec sig0 = GPIO_DT_SPEC_GET(DT_PATH(zephyr_user), signal_gpios);
 
@@ -17,7 +14,7 @@ int get_efuse_voltage(void)
 		return -1;
 	}
 
-    ret = gpio_pin_configure_dt(&sig0, GPIO_INPUT);
+    ret = gpio_pin_configure_dt(&sig0, GPIO_OUTPUT);
 	if (ret < 0) {
 		return -1;
     }
@@ -26,6 +23,7 @@ int get_efuse_voltage(void)
     if (current_state < 0) {
         return -1;
     }
+    
     LOG_INF("E-fuse current state is (%i)\n", current_state);
     return current_state;
 }
@@ -46,7 +44,7 @@ void set_eFuse_low()
 	}
         
     if(current_state != 1) {
-        LOG_INF("E-fuse pin is already low\n");
+        LOG_INF("E-fuse pin is already disabled\n");
         return;
     }
     else
@@ -56,12 +54,15 @@ void set_eFuse_low()
             return;
         }    
     }
+    
+    current_state = get_efuse_voltage();
+    if(current_state != 0) return;
 
-    LOG_INF("E-fuse is in Open Drain mode\n");
+    LOG_INF("E-fuse had been disabled\n");
 	
 }
 
-//Take E-Fuse pins off open drain mode
+//Pull E-Fuse pins high
 void set_eFuse_high()
 {
     int ret;
@@ -72,16 +73,19 @@ void set_eFuse_high()
 	}
 
     if(current_state != 0) {
-        LOG_INF("E-fuse pin is already high\n");
+        LOG_INF("E-fuse pin is already enabled\n");
         return;
     }
     else
     {
-        ret = gpio_pin_configure_dt(&sig0, GPIO_OUTPUT);
+        ret = gpio_pin_configure_dt(&sig0, GPIO_OUTPUT_HIGH);
         if (ret < 0) {
             return;
         } 
     }
     
-    LOG_INF("E-fuse is not in Open Drain mode\n");
+    current_state = get_efuse_voltage();
+    if(current_state != 1) return;
+    
+    LOG_INF("E-fuse had been enabled\n");
 }

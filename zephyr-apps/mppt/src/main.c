@@ -30,16 +30,16 @@ void main(void)
 		return;
 	}
 
-	ret = setup_adc();
-	if (ret < 0) {
-		return;
-	}
+	// ret = setup_adc();
+	// if (ret < 0) {
+	// 	return;
+	// }
 
 	while (1) {
 
 		LOG_INF("Running Main()...");
 		
-		read_adc_channels();
+		//read_adc_channels();
 
 		ret = gpio_pin_toggle_dt(&led);
 		if (ret < 0) {
