@@ -11,10 +11,25 @@
 
 #define SUCCESS 1
 
+/*
+* Initialize efuse to a low state. 
+*/
 int8_t efuse_init(void);
 
+/*
+* Read the state of the efuse. 
+* Returns -EIO if there is and error.  
+*/
 int8_t get_efuse_state(void);
 
+/*
+* Read the state of the efuse. 
+* Returns -EIO if there is and error, otherwise returns the current state.  
+*/
 int8_t set_eFuse_low(void); 
 
+/*
+* Read the state of the efuse. 
+* Returns -EIO if there is and error, otherwise returns the current state.  
+*/
 int8_t set_eFuse_high(void);

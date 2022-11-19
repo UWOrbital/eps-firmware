@@ -42,7 +42,7 @@ int8_t get_efuse_state(void)
 //Pull E-Fuse pins to ground via open drain
 int8_t set_eFuse_low(void)
 {
-	int8_t ret;
+    int8_t ret;
     int8_t current_state = get_efuse_state();
       
     if(current_state != 1) {
