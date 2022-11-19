@@ -13,7 +13,7 @@
 
 int8_t efuse_init(void);
 
-int8_t get_efuse_voltage(void);
+int8_t get_efuse_state(void);
 
 int8_t set_eFuse_low(void); 
 

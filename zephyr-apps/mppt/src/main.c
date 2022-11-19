@@ -31,19 +31,26 @@ void main(void)
 		return;
 	}
 
+	// Configure adc
 	ret = setup_adc();
+	if (ret < 0) {
+		return;
+	}
+
+	// Configure efuse
+	ret = efuse_init();
 	if (ret < 0) {
 		return;
 	}
 
 	// toggle for testing
 	uint8_t toggle = 0; 
-	int8_t gpio_state = 0;
 
 	while (1) {
 
 		LOG_INF("Running Main(%"PRId32")...", toggle);
 
+		// test toggling gpio pin c14 
 		if (toggle == 1) {
 			LOG_INF("set_eFuse_high()");
 			set_eFuse_high();
@@ -51,10 +58,6 @@ void main(void)
 			LOG_INF("set_eFuse_low()");
 			set_eFuse_low();
 		}
-
-		// read gpio pin c14 
-		gpio_state = get_efuse_state();
-		LOG_INF("gpio = %"PRId32" state\n", gpio_state);
 		
 		// commented out for now
 		//read_adc_channels();

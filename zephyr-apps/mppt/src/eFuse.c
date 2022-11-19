@@ -20,13 +20,14 @@ int8_t efuse_init(void)
 		return -EIO;
     }
 
+    LOG_INF("E-fuse initialized: GPIO_OUTPUT_LOW");
+
     return SUCCESS;
 }
 
 // Read E-Fuse pins
 int8_t get_efuse_state(void)
 {
-    int8_t ret; 
     int8_t current_state;
     
     current_state = gpio_pin_get_dt(&sig0);
@@ -34,7 +35,7 @@ int8_t get_efuse_state(void)
         return -EIO;
     }
     
-    LOG_INF("E-fuse current state is (%i)\n", current_state);
+    LOG_DBG("E-fuse current state is (%i)\n", current_state);
     return current_state;
 }
 
@@ -45,7 +46,7 @@ int8_t set_eFuse_low(void)
     int8_t current_state = get_efuse_state();
       
     if(current_state != 1) {
-        LOG_INF("E-fuse pin is already disabled\n");
+        LOG_DBG("E-fuse pin is already disabled\n");
         return SUCCESS;
     }
     else
@@ -59,7 +60,7 @@ int8_t set_eFuse_low(void)
     current_state = get_efuse_state();
     if(current_state != 0) return -EIO;
 
-    LOG_INF("E-fuse had been disabled\n");
+    LOG_INF("E-fuse had been disabled, state: [%i]\n", current_state);
 
     return current_state;
 	
@@ -76,7 +77,7 @@ int8_t set_eFuse_high()
 	}
 
     if(current_state != 0) {
-        LOG_INF("E-fuse pin is already enabled\n");
+        LOG_DBG("E-fuse pin is already enabled\n");
         return -EIO;
     }
     else
@@ -90,7 +91,7 @@ int8_t set_eFuse_high()
     current_state = get_efuse_state();
     if(current_state != 1) return -EIO;
     
-    LOG_INF("E-fuse had been enabled\n");
+    LOG_INF("E-fuse had been enabled, state: [%i]\n", current_state);
 
     return current_state;
 }
