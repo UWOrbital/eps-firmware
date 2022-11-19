@@ -9,7 +9,12 @@
 #error "No suitable devicetree overlay specified"
 #endif
 
-int get_efuse_voltage();
-void set_eFuse_low(); 
-void set_eFuse_high();
+#define SUCCESS 1
 
+int8_t efuse_init(void);
+
+int8_t get_efuse_voltage(void);
+
+int8_t set_eFuse_low(void); 
+
+int8_t set_eFuse_high(void);

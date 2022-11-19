@@ -8,7 +8,7 @@
 LOG_MODULE_REGISTER(mppt, LOG_LEVEL_INF);
 
 /* 1000 msec = 1 sec */
-#define SLEEP_TIME_MS   2500
+#define SLEEP_TIME_MS   5000
 
 /* The devicetree node identifier for the "led0" alias. */
 #define LED0_NODE DT_ALIAS(led0)
@@ -31,14 +31,14 @@ void main(void)
 		return;
 	}
 
-	// ret = setup_adc();
-	// if (ret < 0) {
-	// 	return;
-	// }
+	ret = setup_adc();
+	if (ret < 0) {
+		return;
+	}
 
 	// toggle for testing
 	uint8_t toggle = 0; 
-	int gpio_state = 0;
+	int8_t gpio_state = 0;
 
 	while (1) {
 
@@ -53,9 +53,10 @@ void main(void)
 		}
 
 		// read gpio pin c14 
-		gpio_state = get_efuse_voltage();
+		gpio_state = get_efuse_state();
 		LOG_INF("gpio = %"PRId32" state\n", gpio_state);
 		
+		// commented out for now
 		//read_adc_channels();
 
 		ret = gpio_pin_toggle_dt(&led);
