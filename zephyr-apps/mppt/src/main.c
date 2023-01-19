@@ -62,6 +62,9 @@ void main(void)
 		// commented out for now
 		read_adc_channels();
 
+		// Read current
+		float current = get_current_reading(10);
+
 		ret = gpio_pin_toggle_dt(&led);
 		if (ret < 0) {
 			return;

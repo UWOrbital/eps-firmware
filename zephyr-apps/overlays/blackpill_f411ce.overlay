@@ -8,19 +8,27 @@
 		Specify the channels to use, corresponds to ADC0-9
 		which are pins PA0-7, PB0, PB1
 		*/ 
-		io-channels = <&adc1 0>;
+
+		// Reading ADC at from both PA0 and PA4
+		// io-channels = <&adc1 0>, <&adc1 4>;
+
+		// Current sensor is connected on PA4
+		io-channels = <&adc1 4>;
     };
 };
 
 // Update configuration from board dts file
 &adc1 {
 	status = "okay";
-	pinctrl-0 = <&adc1_in0_pa0>;
+
+	// Defining pins PA0 and PA4
+	pinctrl-0 = <&adc1_in0_pa0>, <&adc1_in4_pa4>;
     pinctrl-names = "default";
 
 	#address-cells = <1>;
 	#size-cells = <0>;
 
+	// Defining PA0 Channel
 	channel@0 {
 		reg = <0>;
 		zephyr,gain = "ADC_GAIN_1";
@@ -28,5 +36,21 @@
 		zephyr,acquisition-time = <ADC_ACQ_TIME_DEFAULT>;
 		zephyr,resolution = <12>;
 	};
+
+	// Defining PA4 Channel
+	channel@4 {
+		reg = <4>;
+		zephyr,gain = "ADC_GAIN_1";
+		zephyr,reference = "ADC_REF_INTERNAL";
+		zephyr,acquisition-time = <ADC_ACQ_TIME_DEFAULT>;
+		zephyr,resolution = <12>;
+	};
 };
 
+// redefined spi to not conflict with adc
+&spi1 {
+	pinctrl-0 = <&spi2_sck_pb13 &spi2_nss_pb12
+		     &spi2_miso_pb14 &spi2_mosi_pb15>;
+	pinctrl-names = "default";
+	status = "okay";
+};
