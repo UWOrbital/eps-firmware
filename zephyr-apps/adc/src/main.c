@@ -25,6 +25,9 @@ static const struct adc_dt_spec adc_channels[] = {
 
 void main(void)
 {
+	float gain = -2.56;
+	float Vref = 2469.28;
+
 	int err;
 	int16_t buf;
 	struct adc_sequence sequence = {
@@ -51,6 +54,7 @@ void main(void)
 		printk("ADC reading:\n");
 		for (size_t i = 0U; i < ARRAY_SIZE(adc_channels); i++) {
 			int32_t val_mv;
+			int32_t val_ma;
 
 			printk("- %s, channel %d: ",
 			       adc_channels[i].dev->name,
@@ -70,10 +74,11 @@ void main(void)
 			val_mv = buf;
 			err = adc_raw_to_millivolts_dt(&adc_channels[i],
 						       &val_mv);
+			val_ma = (val_mv - Vref) * gain;
 			if (err < 0) {
 				printk(" (value in mV not available)\n");
 			} else {
-				printk(" = %"PRId32" mV\n", val_mv);
+				printk(" = %"PRId32" mV, %"PRId32" mA\n", val_mv, val_ma);
 			}
 		}
 

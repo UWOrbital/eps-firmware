@@ -20,3 +20,7 @@
 int8_t setup_adc();
 
 void read_adc_channels();
+
+int32_t read_adc_channel(int8_t chn);
+
+float get_current_reading(int8_t num_samples);

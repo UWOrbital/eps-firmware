@@ -83,11 +83,21 @@ Additional steps if that does not work can be found here: [Homebrew: Could not s
 
 ## Using Minicom
 
-On linux/OSX you can utilize minicom for logging output, to setup: 
+### Install
+
+On **linux** you can utilize minicom for logging output, to setup: 
 
 ```
 sudo apt install minicom -y
 ```
+
+On **OSX**:
+
+```
+brew install minicom
+```
+
+### Usage
 
 To view availible devices:
 ```

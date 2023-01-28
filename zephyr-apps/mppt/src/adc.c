@@ -4,6 +4,12 @@
 
 LOG_MODULE_REGISTER(mppt_adc, LOG_LEVEL_INF);
 
+// For current sensor readings
+#define CURRENT_SENSOR_GAIN -1.5 
+
+// In mV
+#define REFERENCE_VOLTAGE 2550 
+
 /* Data of ADC io-channels specified in devicetree. */
 static const struct adc_dt_spec adc_channels[] = {
 	DT_FOREACH_PROP_ELEM(DT_PATH(zephyr_user), io_channels,
@@ -15,7 +21,6 @@ static struct adc_sequence sequence = {
 	.buffer      = &buf,
 	/* buffer size in bytes, not number of samples */
 	.buffer_size = sizeof(buf),
-	.resolution = 12,
 };
 
 int8_t setup_adc(){
@@ -73,3 +78,49 @@ void read_adc_channels(){
 	}
 }
 
+int32_t read_adc_channel(int8_t chn){
+
+	int err; 
+	int32_t val_mv;
+	
+	(void)adc_sequence_init_dt(&adc_channels[chn], &sequence);
+
+	err = adc_read(adc_channels[chn].dev, &sequence);
+	if (err < 0) {
+		LOG_INF("Could not read (%d)\n", err);
+	} 
+
+	/* conversion to mV may not be supported, skip if not */
+	val_mv = buf;
+	err = adc_raw_to_millivolts_dt(&adc_channels[chn], &val_mv);
+	if (err < 0) {
+		LOG_INF(" (value in mV not available)\n");
+	} 	
+
+	return val_mv;
+}
+
+float get_current_reading(int8_t num_samples){
+	
+	int8_t channel_num = 0; 
+	int32_t avgVal_mV = 0; 
+
+	for (int8_t i = 0; i < num_samples; i++){
+		
+		// Get reading in mV
+		avgVal_mV += read_adc_channel(channel_num); 
+	}
+
+	// Get readings average
+	avgVal_mV = avgVal_mV / num_samples; 
+	
+	LOG_INF("Current Reading(mV) = %"PRId32" mV\n", avgVal_mV);
+
+	// Perform conversion
+	float current = (avgVal_mV - REFERENCE_VOLTAGE)*CURRENT_SENSOR_GAIN;
+
+	LOG_INF("Current = %"PRId32" mA", (int32_t)current);
+
+	return current; 
+
+}
