@@ -4,6 +4,7 @@
 
 #include "adc.h"
 #include "eFuse.h"
+#include "mppt.h"
 
 LOG_MODULE_REGISTER(mppt, LOG_LEVEL_INF);
 
